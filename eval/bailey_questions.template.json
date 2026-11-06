@@ -1,0 +1,24 @@
+{
+  "_instructions": [
+    "HOW TO USE (about 30 minutes): copy this file to eval\\bailey_questions.json (RUN-MY-QUESTIONS.cmd does it for you), fill in the empty strings, save, then double-click RUN-MY-QUESTIONS.cmd.",
+    "real = 7 questions whose answer IS in your class notes (corpus folder). Write them in your own words, not copied from a heading. Mix easy and hard; at least one should need two sections.",
+    "trap = 3 questions whose answer is NOT in the notes. Make 1 plainly off-topic (cooking, sports) and 2 near the topic (sound like machine learning but your weeks never covered them).",
+    "Before you run it, write down for each real question which note should answer it: that is your answer key.",
+    "Leave a slot as an empty string to skip it. Keep the quotes and commas exactly as they are; only type between the quotes.",
+    "The run never changes MIN_SCORE and never touches the tuning or held-out sets. It writes eval\\my_scorecard_<date-time>.md with empty right / half / wrong columns for YOU to mark."
+  ],
+  "real": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "trap": [
+    "",
+    "",
+    ""
+  ]
+}

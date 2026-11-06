@@ -1,0 +1,7 @@
+# Topic bubbles on the page: "Label | question". One per line. Lines starting with # are ignored.
+Watering | How often should I water houseplants?
+Light | How much light do houseplants need?
+Repotting | When should I repot a plant, and into what size pot?
+Soil | What kind of soil should I use for potted plants?
+Pests | How do I get rid of spider mites or mealybugs?
+Yellow leaves | Why are my houseplant leaves turning yellow?

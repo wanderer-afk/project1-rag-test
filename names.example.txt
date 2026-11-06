@@ -1,0 +1,13 @@
+# Copy this file to names.txt and put the REAL classmate names in it, one per line.
+# names.txt is gitignored, so real names never reach git. These are made-up examples.
+# Write the full name AND each part on its own line, so "Zara Quill" and a lone "Zara" are both caught.
+# Order does not matter: longer names are replaced first automatically. Capitals are ignored,
+# so do not list a name part that is also an everyday word (it would be replaced everywhere).
+# A plain line becomes "a classmate". "Name = stand-in" picks a different stand-in (for the teacher).
+Zara Quill
+Zara
+Quill
+Orrin Bexley
+Orrin
+Bexley
+Vashti = Teacher
