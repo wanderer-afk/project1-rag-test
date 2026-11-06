@@ -1,52 +1,48 @@
-# Ask My Notes: a local RAG chat over your own study notes
+# Ask My Notes
 
-**RAG** (retrieval-augmented generation) means: search your own documents first, then have an AI model answer using only the passages it found. This project is a small, complete example of that idea, built and tested from scratch.
+I built this for my bootcamp project. You put your own study notes in a folder, ask a question, and it answers using only those notes. The passages it used are shown on the right, so you can check the answer yourself. If the notes don't cover the question, it says so instead of guessing.
 
-It runs entirely on your own computer. Your notes are never uploaded anywhere.
+**Built with help from Claude (an AI assistant).** Claude wrote much of the first draft of the code and the tests. I ran them, checked the results, and can explain how each part works. The sample notes in this repo are about houseplants, so nothing from my classes is included.
 
-## What it does
+## How it works
 
-1. Reads every `.md` or `.txt` file in the `corpus/` folder and splits it into passages at its headings.
-2. Turns each passage into a list of 768 numbers (an **embedding**, which places similar meanings close together). The embedding model is `nomic-embed-text`, run locally through **Ollama**.
-3. When you ask a question, it finds the closest passages using cosine similarity (a score from 0 to 1 for how closely two meanings match).
-4. If the best match scores below a cutoff, it refuses with "Not in my notes." The model is never called in that case.
-5. Otherwise it sends the top passages to a chat model (`gemma4:26b`, also local) with strict rules: answer only from the notes, and cite every sentence with the passage number it came from.
-6. The page shows the answer, plus the passages behind it.
+1. **It reads your notes.** Every `.md` or `.txt` file in the `corpus/` folder is cut into passages at its headings.
+2. **It turns each passage into numbers.** An *embedding* is a list of numbers that places similar meanings close together. The model that does this, `nomic-embed-text`, runs on your computer through Ollama.
+3. **It finds the closest passages to your question.** Each match gets a similarity score (higher means a closer match).
+4. **It refuses if nothing is close enough.** If the best score is below 0.57, it answers "Not in my notes." The chat model is not called at all in that case.
+5. **Otherwise it writes an answer with citations.** The chat model (`gemma4:26b`, also on your computer) gets the top 3 passages and two rules: answer only from them, and put the passage number after every sentence, like [1]. If the first answer has no citations, it asks once more. If it still has none, the answer is refused.
 
-## Design choices worth a look
+## Why I built it this way
 
-- **Refuse before you guess.** The cutoff gate runs before the chat model, so off-topic questions cost nothing and can't produce invented answers.
-- **Citation or nothing.** An answer without `[1]`-style citations is rejected and asked again.
-- **The cutoff came from the author's own notes.** It was chosen on a separate question set that is not included in this public copy, so the 0.57 value is a starting point for your own notes. Re-check it with your questions.
-- **Privacy gate for the notes.** `build_corpus.py` copies notes into `corpus/` and refuses to finish if it finds a listed name, a personal detail or a private file path. Names live in `names.txt`, which git ignores.
-- **Tests that do not need a model.** Chunking, retrieval, refusal and the page's empty-folder case are all tested with stand-in data (63 tests in total; the skipped ones need the original notes, the Colab notebook or the private word list). One test checks a real houseplant search with the embedding model, so it needs Ollama.
+- **Refuse before guessing.** The score check runs before the chat model, so an off-topic question can't produce an invented answer.
+- **Citations are required.** Every claim points to a passage you can read.
+- **The cutoff came from my own class notes.** I picked 0.57 by looking at the gap between the lowest score for a real question and the highest score for a question the notes don't cover, on a separate question set that is not included in this repo.
+- **A privacy check on notes.** `build_corpus.py` copies notes into `corpus/` and stops if it finds a name from `names.txt` or an unknown speaker. It also removes schedule and Zoom details. It does not check for emails, phone numbers or addresses, so check those yourself. `names.txt` is kept private, and git ignores it.
+- **Tests.** There are 63 tests. Seven are skipped in this repo: some need the Colab notebook or a question set that isn't included, and others check course-specific privacy words that were removed.
 
-## Who can run this
+## Running it
 
-Cloning the repo does not give you a working chat by itself.
+**You need Ollama and a large model first.** Ollama runs AI models on your own computer and is free. The chat model is a large download (about 18 GB) and needs a lot of memory. Search also needs Ollama, because the embedding model runs through it. Without Ollama, only the tests that use stand-in data run.
 
-- The chat page needs **Ollama** (a free program that runs AI models on your own computer) and the **gemma4:26b** model. The model download is about 18 GB and needs about 16 GB of memory.
-- Search itself also needs Ollama, because the embedding model `nomic-embed-text` runs through it. Without Ollama only the tests that use stand-in data run.
-
-## Run it (Windows)
-
-1. Install Python 3.11 or newer and Ollama.
-2. In a Command Prompt: `ollama pull nomic-embed-text` and `ollama pull gemma4:26b`.
-3. Put your own `.md` or `.txt` notes in the `corpus/` folder. Replace the three sample files.
+1. Install Python 3.11 or newer, and Ollama.
+2. In a Command Prompt, run `ollama pull nomic-embed-text` and `ollama pull gemma4:26b`.
+3. Put your own `.md` or `.txt` notes in `corpus/`. Running `build_corpus.py` replaces everything in that folder, so keep a copy of the sample notes if you want them.
 4. Double-click `RUN-CHAT.cmd`. The page opens at http://localhost:8599.
 
-Run the tests with `python -m unittest discover -s tests`.
+To run the tests, use the project's own Python: `.venv\Scripts\python -m unittest discover -s tests`. The `.venv` folder appears the first time you run `RUN-CHAT.cmd`. The first run also downloads the Python packages and writes a `.index/` cache.
 
-## Layout
+## What it doesn't do well yet
 
-- `app.py` - the Streamlit chat page
-- `rag.py` - the whole pipeline: chunking, embedding, retrieval, refusal, answer
-- `build_corpus.py` - copies and privacy-checks notes into `corpus/`
-- `topics.txt` - the topic buttons on the page (edit to match your notes)
-- `tests/test_rag.py` - the tests
-- `corpus/` - sample notes (replace with your own)
+- A question that is close to the notes' topic can still get an answer that goes slightly beyond them. The score cutoff can't catch that on its own. The chat model's rules are what catch it.
+- It has only been run on one computer, and the test suite has not been run on a fresh machine.
+- The 0.57 cutoff was tuned on my own class notes. Check it again with your notes and your questions.
 
-## Known limits
+## Files
 
-- Questions that sit close to the notes' topic can still get an answer that goes beyond them. The cutoff alone cannot catch those; the chat model's rules are what refuse them.
-- It has been run on a single PC. It has not been load-tested.
+- `app.py`: the chat page
+- `rag.py`: the whole pipeline (split, embed, search, refuse, answer)
+- `build_corpus.py`: copies and privacy-checks notes
+- `topics.txt`: the topic buttons on the page
+- `RUN-ASK.cmd`, `RUN-MY-QUESTIONS.cmd`, `run_eval.py`, `run_my_questions.py`: command-line tools. `run_eval.py` needs a question file that is not included in this repo.
+- `tests/test_rag.py`: the tests
+- `corpus/`: sample notes

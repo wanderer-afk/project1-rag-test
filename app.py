@@ -80,7 +80,7 @@ with st.sidebar:
         st.success(f"Saved {len(uploads)} file(s). Re-reading the folder.")
     min_score = st.slider("Strictness (higher = refuses more often)", 0.30, 0.90, float(rag.MIN_SCORE), 0.01,
                           help="How closely a passage must match your question before the assistant uses it. "
-                               f"The recommended setting is {rag.MIN_SCORE}, tuned on the sample questions.")
+                               f"The recommended setting is {rag.MIN_SCORE}, tuned on the author's own notes (see the README).")
     st.caption(f"Two AI models run on this PC through Ollama: {rag.EMBED_MODEL} finds the matching passages, "
                f"and {rag.CHAT_MODEL} writes the answer.")
     if st.button("Clear chat"):

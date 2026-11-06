@@ -412,7 +412,7 @@ class Corpus(unittest.TestCase):
         for good in ("Keep this.", "# Part 5", "Also keep."):
             self.assertIn(good, out)
 
-    @unittest.skip("needs private_words.txt (course-specific words kept out of the public copy)")
+    @unittest.skip("course-specific privacy words were removed from the public copy")
     def test_travel_timezone_chat_and_schedule_lines_go(self):
         raw = ("Embeddings are vectors.\nThe teacher is travelling to Lisbon next month.\n"
                "Times are in UTC-3.\nAsk in the group chat #announcements.\nSee _To delete/old.md.\n"
@@ -428,7 +428,7 @@ class Corpus(unittest.TestCase):
                      "There is a **fine-tuning class**, but focus on RAG.", "## Teacher's corrections"):
             self.assertIn(good, out)
 
-    @unittest.skip("needs private_words.txt (course-specific gate words are kept out of the public copy)")
+    @unittest.skip("course-specific privacy words were removed from the public copy")
 
     def test_logistics_rules_do_not_eat_lesson_lines(self):
         """'next class' must be a whole phrase and a bare 'travelling' is not logistics,
@@ -486,7 +486,7 @@ class Corpus(unittest.TestCase):
             self.assertNotIn(bad, out)
         self.assertIn("Each breed is its own class.", out)
 
-    @unittest.skip("needs private_words.txt (course-specific gate words are kept out of the public copy)")
+    @unittest.skip("course-specific privacy words were removed from the public copy")
 
     def test_qa_table_callout_keeps_its_good_rows(self):
         raw = ("> [!example] Q&A log\n> | Who | Q | A |\n> |---|---|---|\n"
@@ -505,7 +505,7 @@ class Corpus(unittest.TestCase):
         out = build_corpus.clean("The paper is dated 11 Oct 2018.\n", [])
         self.assertIn("11 Oct 2018", out)
 
-    @unittest.skip("needs private_words.txt (course-specific gate words are kept out of the public copy)")
+    @unittest.skip("course-specific privacy words were removed from the public copy")
 
     def test_gate_catches_private_details(self):
         with tempfile.TemporaryDirectory() as d:
@@ -538,7 +538,7 @@ class EvalNumbers(unittest.TestCase):
             self.assertIsNone(res["suggest"])
             self.assertIn("needs at least one real AND one trap", run_eval.report(res))
 
-    @unittest.skip("held-out class questions removed from the public copy")
+    @unittest.skip("the held-out question set is not included in the public copy")
 
     def test_held_out_set_is_kept_exactly_and_every_question_has_an_answer_key(self):
         raw = json.loads(run_eval.HELD_OUT.read_text(encoding="utf-8"))
